@@ -50,6 +50,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           webViewController = controller;
         },
         onLoadStop: (controller, url) async {
+          await Future.delayed(const Duration(milliseconds: 400));
           await controller.evaluateJavascript(source: "fnPopup();");
         },
       ),
