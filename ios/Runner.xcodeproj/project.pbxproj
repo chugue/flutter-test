@@ -11,6 +11,8 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4283A8B02CE5960E0014F9D3 /* eng.traineddata in Resources */ = {isa = PBXBuildFile; fileRef = 4283A8AD2CE5960E0014F9D3 /* eng.traineddata */; };
+		4283A8B12CE5960E0014F9D3 /* kor.traineddata in Resources */ = {isa = PBXBuildFile; fileRef = 4283A8AE2CE5960E0014F9D3 /* kor.traineddata */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -48,6 +50,8 @@
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		41E4225FBD791567DC228F9D /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4283A8AD2CE5960E0014F9D3 /* eng.traineddata */ = {isa = PBXFileReference; lastKnownFileType = file; path = eng.traineddata; sourceTree = "<group>"; };
+		4283A8AE2CE5960E0014F9D3 /* kor.traineddata */ = {isa = PBXFileReference; lastKnownFileType = file; path = kor.traineddata; sourceTree = "<group>"; };
 		67843EB8C3FB3B9A4F65BADA /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +99,16 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
+		4283A8AF2CE5960E0014F9D3 /* tessdata */ = {
+			isa = PBXGroup;
+			children = (
+				4283A8AD2CE5960E0014F9D3 /* eng.traineddata */,
+				4283A8AE2CE5960E0014F9D3 /* kor.traineddata */,
+			);
+			name = tessdata;
+			path = ../assets/tessdata;
+			sourceTree = SOURCE_ROOT;
+		};
 		7BC4863EFAE6D5756E12C175 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +153,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				4283A8AF2CE5960E0014F9D3 /* tessdata */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -161,7 +176,6 @@
 				67843EB8C3FB3B9A4F65BADA /* Pods-RunnerTests.release.xcconfig */,
 				AB30E43C28A557DF7AF1FB7B /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -264,6 +278,8 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				4283A8B02CE5960E0014F9D3 /* eng.traineddata in Resources */,
+				4283A8B12CE5960E0014F9D3 /* kor.traineddata in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,12 +7,19 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
+  - flutter_tesseract_ocr (0.3.4):
+    - Flutter
+    - SwiftyTesseract
   - image_picker_ios (0.0.1):
     - Flutter
   - OrderedSet (6.0.3)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - photo_manager (2.0.0):
     - Flutter
     - FlutterMacOS
+  - SwiftyTesseract (3.1.3)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -20,21 +27,28 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - flutter_tesseract_ocr (from `.symlinks/plugins/flutter_tesseract_ocr/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
     - OrderedSet
+    - SwiftyTesseract
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
+  flutter_tesseract_ocr:
+    :path: ".symlinks/plugins/flutter_tesseract_ocr/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
   webview_flutter_wkwebview:
@@ -43,11 +57,14 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview_ios: 6f63631e2c62a7c350263b13fa5427aedefe81d4
+  flutter_tesseract_ocr: c01971df9e5817a08563298b8ce571fa10e164f1
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
+  SwiftyTesseract: 1f3d96668ae92dc2208d9842c8a59bea9fad2cbb
   webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: e9c3f6015cd08d24f4f67be4c894e4fb26d6abe3
 
 COCOAPODS: 1.15.2

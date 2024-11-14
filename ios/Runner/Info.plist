@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>이 앱은 사용자의 사진 라이브러리에 접근하여 사진을 선택하고 업로드합니다.</string>
 </dict>
 </plist>

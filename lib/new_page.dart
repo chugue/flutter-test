@@ -1,11 +1,20 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
-class NewPage extends StatelessWidget {
+class NewPage extends StatefulWidget {
   const NewPage({super.key});
+
+  @override
+  _NewPageState createState() => _NewPageState();
+}
+
+class _NewPageState extends State<NewPage> {
+  File? _imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -17,44 +26,39 @@ class NewPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            _imageFile != null
+                ? Image.file(_imageFile!)
+                : const Text('이미지를 선택하세요'),
             ElevatedButton(
               onPressed: () async {
-                final PermissionState result =
-                    await PhotoManager.requestPermissionExtend();
-                if (result.isAuth) {
-                  final List<AssetPathEntity> assetPaths =
-                      await PhotoManager.getAssetPathList(
-                    type: RequestType.image,
-                  );
+                try {
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? image =
+                      await picker.pickImage(source: ImageSource.gallery);
 
-                  if (assetPaths.isNotEmpty) {
-                    final AssetPathEntity assetPath = assetPaths.first;
-                    final List<AssetEntity> assetList =
-                        await assetPath.getAssetListPaged(
-                      page: 0,
-                      size: 1,
-                    );
-
-                    if (assetList.isNotEmpty) {
-                      final AssetEntity asset = assetList.first;
-                      final File? file = await asset.file;
-
-                      if (file != null) {
-                        try {
-                          String presignedUrl =
-                              await getPresignedUrl(asset.title!);
-                          await uploadFile(presignedUrl, file);
-                        } catch (e) {
-                          print('Error: $e');
-                        }
-                      }
-                    }
+                  if (image != null) {
+                    setState(() {
+                      _imageFile = File(image.path);
+                    });
+                  } else {
+                    print('No image selected');
                   }
-                } else {
-                  print('Permission denied');
+                } catch (e) {
+                  print('Error: $e');
                 }
               },
               child: const Text('앨범에서 사진 선택하기'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                if (_imageFile != null) {
+                  await uploadFile(_imageFile!);
+                } else {
+                  print('이미지를 선택하세요');
+                }
+              },
+              child: const Text('업로드하기'),
             ),
           ],
         ),
@@ -63,24 +67,37 @@ class NewPage extends StatelessWidget {
   }
 }
 
-Future<void> uploadFile(String presignedUrl, File file) async {
+Future<void> uploadFile(File file) async {
+  String presignedUrl = await getPresignedUrl();
+
   final request = http.Request('PUT', Uri.parse(presignedUrl))
     ..headers['Content-Type'] = 'application/octet-stream'
     ..bodyBytes = await file.readAsBytes();
 
-  final response = await request.send();
-  if (response.statusCode == 200) {
-    print('File uploaded successfully');
-  } else {
-    print('File upload failed');
+  try {
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      print('File uploaded successfully');
+    } else {
+      print('File upload failed with status: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Upload error: $e');
   }
 }
 
-Future<String> getPresignedUrl(String fileName) async {
-  final response = await http.get(Uri.parse(
-      '<https://your-nest-api-url/file-api/presigned-url/$fileName>'));
-  if (response.statusCode == 200) {
-    return response.body;
+Future<String> getPresignedUrl() async {
+  final response = await http.post(
+    Uri.parse('http://127.0.0.1:3000/file-api/check'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      "storeId": "aaa",
+      "originalFileName": "test.png",
+    }),
+  );
+  if (response.statusCode == 201) {
+    final json = jsonDecode(response.body);
+    return json['data'];
   } else {
     throw Exception('Failed to get presigned URL');
   }
