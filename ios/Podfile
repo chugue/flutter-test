@@ -31,7 +31,9 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-
+  Pod::PICKER_MEDIA = true    
+  Pod::PICKER_AUDIO = true
+  Pod::PICKER_DOCUMENT = true
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do

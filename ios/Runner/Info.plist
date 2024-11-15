@@ -47,5 +47,20 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>이 앱은 사용자의 사진 라이브러리에 접근하여 사진을 선택하고 업로드합니다.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>음악 파일 접근을 위해 권한이 필요합니다.</string>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSDocumentsDirectoryUsageDescription</key>
+	<string>문서 접근을 위해 권한이 필요합니다.</string>
 </dict>
 </plist>
