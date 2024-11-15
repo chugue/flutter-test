@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:logger/logger.dart';
 
-class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({super.key});
+class NiceWebView extends StatefulWidget {
+  const NiceWebView({super.key});
 
   @override
-  State<WebViewScreen> createState() => _WebViewScreenState();
+  State<NiceWebView> createState() => _NiceWebViewState();
 }
 
-class _WebViewScreenState extends State<WebViewScreen> {
+class _NiceWebViewState extends State<NiceWebView> {
   late InAppWebViewController webViewController;
   String? htmlContent;
 
@@ -57,7 +57,16 @@ class _WebViewScreenState extends State<WebViewScreen> {
     );
   }
 
-  ///////////////////////////////// 통신 메소드 /////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+  //////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+
+  // nice 인증 페이지 로드
   Future<void> _loadHtmlContent() async {
     final dio = Dio();
     try {

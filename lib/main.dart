@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:test/tesseract.dart';
-import 'new_page.dart';
+import 'package:test/nice/nice_web_view.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Tesseract Demo'),
+      home: const NiceWebView(),
     );
   }
 }

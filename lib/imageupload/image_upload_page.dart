@@ -6,14 +6,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-class NewPage extends StatefulWidget {
-  const NewPage({super.key});
+class ImageUploadPage extends StatefulWidget {
+  const ImageUploadPage({super.key});
 
   @override
-  _NewPageState createState() => _NewPageState();
+  _ImageUploadPageState createState() => _ImageUploadPageState();
 }
 
-class _NewPageState extends State<NewPage> {
+class _ImageUploadPageState extends State<ImageUploadPage> {
   File? _imageFile;
 
   @override
@@ -67,6 +67,16 @@ class _NewPageState extends State<NewPage> {
   }
 }
 
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+//////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////
+
+// 파일 업로드
 Future<void> uploadFile(File file) async {
   String presignedUrl = await getPresignedUrl();
 
@@ -86,6 +96,7 @@ Future<void> uploadFile(File file) async {
   }
 }
 
+// 업로드 권한 url 받아오기
 Future<String> getPresignedUrl() async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:3000/file-api/check'),
