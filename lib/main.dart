@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:test/nice/nice_web_view.dart';
+import 'package:test/openai/ocr_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const NiceWebView(),
+      home: const OcrScreen(),
     );
   }
 }
