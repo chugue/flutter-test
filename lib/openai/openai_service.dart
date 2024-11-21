@@ -20,27 +20,7 @@ class OpenAIService {
         'Authorization': 'Bearer ${dotenv.env['OPENAI_API_KEY']}',
       },
       body: jsonEncode({
-        'model': 'gpt-4o-mini',
-        'messages': [
-          {
-            'role': 'user',
-            'content': [
-              {
-                'type': 'text',
-                'text':
-                    '너는 뛰어난 세무사야. 이 이미지는 사업자 등록증이고, 여기서 사업자 등록번호, 개업연월일, 사업장 주소, 상호명(법인명,단체명)을 추출해서 json으로만 반환해야해.\n너가 채워야 할 필드는 businessNumber, startDate, baseAddress, detailAddress, storeName 매칭해서 한글로 반환해야해.\n그리고 보통 주소는 기본주소와 상세주소로 나누어 지는데, 주소가 --서울특별시 종로구 종로 6, 5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 되어있으면 \n기본주소는 --서울특별시 종로구 종로 6--이고 상세주소는 --5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 나누어져야해 \n그리고 모든 주소는 한국에서 실존하는 지역명이어야 해'
-              },
-              {
-                'type': 'image_url',
-                'image_url': {
-                  'url':
-                      'https://ims365.co.kr/file_data/ims365s/2020/09/23/584537f7305734571cbaf170666715cc.jpg'
-                },
-              }
-            ],
-            'detail': 'high',
-          },
-        ],
+        'model': 'gpt-4o',
         // 'messages': [
         //   {
         //     'role': 'user',
@@ -52,12 +32,32 @@ class OpenAIService {
         //       },
         //       {
         //         'type': 'image_url',
-        //         'image_url': {'url': 'data:image/jpeg;base64,$base64Image'}
+        //         'image_url': {
+        //           'url':
+        //               'https://ims365.co.kr/file_data/ims365s/2020/09/23/584537f7305734571cbaf170666715cc.jpg'
+        //         },
         //       }
         //     ],
         //     'detail': 'high',
-        //   }
+        //   },
         // ],
+        'messages': [
+          {
+            'role': 'user',
+            'content': [
+              {
+                'type': 'text',
+                'text':
+                    '너는 뛰어난 세무사야. 이 이미지는 사업자 등록증이고, 여기서 사업자 등록번호, 개업연월일, 사업장 주소, 상호명(법인명,단체명)을 추출해서 json으로만 반환해야해.\n너가 채워야 할 필드는 businessNumber, startDate, baseAddress, detailAddress, storeName 매칭해서 한글로 반환해야해.\n그리고 보통 주소는 기본주소와 상세주소로 나누어 지는데, 주소가 --서울특별시 종로구 종로 6, 5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 되어있으면 \n기본주소는 --서울특별시 종로구 종로 6--이고 상세주소는 --5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 나누어져야해 \n그리고 모든 주소는 한국에서 실존하는 지역명이어야 해'
+              },
+              {
+                'type': 'image_url',
+                'image_url': {'url': 'data:image/jpeg;base64,$base64Image'}
+              }
+            ],
+            'detail': 'high',
+          }
+        ],
       }),
     );
 

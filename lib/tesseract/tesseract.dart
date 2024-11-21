@@ -156,30 +156,30 @@
 //       allowMultiple: false,
 //     );
 
-//     if (result != null && result.files.isNotEmpty) {
-//       final file = result.files.first;
-//       if (file.bytes != null) {
-//         // iOS에서는 bytes를 직접 사용
-//         imageBytes = file.bytes!;
+  //   if (result != null && result.files.isNotEmpty) {
+  //     final file = result.files.first;
+  //     if (file.bytes != null) {
+  //       // iOS에서는 bytes를 직접 사용
+  //       imageBytes = file.bytes!;
 
-//         if (file.extension?.toLowerCase() == 'pdf') {
-//           final tempDir = await getTemporaryDirectory();
-//           final tempPath = '${tempDir.path}/temp.pdf';
-//           await File(tempPath).writeAsBytes(file.bytes!);
-//           await _ocrFromPdf(tempPath);
-//         } else {
-//           await _ocrFromBytes(file.bytes!);
-//         }
-//       } else if (file.path != null) {
-//         // Android 경우 path 사용
-//         if (file.path!.endsWith('.pdf')) {
-//           await _ocrFromPdf(file.path!);
-//         } else {
-//           await _ocrFromFile(file.path!);
-//         }
-//       }
-//     }
-//   }
+  //       if (file.extension?.toLowerCase() == 'pdf') {
+  //         final tempDir = await getTemporaryDirectory();
+  //         final tempPath = '${tempDir.path}/temp.pdf';
+  //         await File(tempPath).writeAsBytes(file.bytes!);
+  //         await _ocrFromPdf(tempPath);
+  //       } else {
+  //         await _ocrFromBytes(file.bytes!);
+  //       }
+  //     } else if (file.path != null) {
+  //       // Android 경우 path 사용
+  //       if (file.path!.endsWith('.pdf')) {
+  //         await _ocrFromPdf(file.path!);
+  //       } else {
+  //         await _ocrFromFile(file.path!);
+  //       }
+  //     }
+  //   }
+  // }
 
 //   // 파일을 Uint8List로 변환하여 OCR 수행
 //   Future<void> _ocrFromFile(String filePath) async {
