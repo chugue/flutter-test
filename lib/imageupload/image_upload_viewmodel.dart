@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/imageupload/dto/nice_user_resp_dto.dart';
-import 'package:test/imageupload/dto/user_info_state_dto.dart';
+import 'package:test/imageupload/dto/store_info_req_dto.dart';
 
 class ImageUploadState {
-  final UserInfoStateDto? userInfoStateDto;
+  final StoreInfoReqDto? userInfoStateDto;
   final NiceUserRespDto? niceUserRespDto;
   final Uint8List? imageData;
   final String? ocrText;
@@ -22,7 +22,7 @@ class ImageUploadState {
   });
 
   ImageUploadState copyWith({
-    UserInfoStateDto? userInfoStateDto,
+    StoreInfoReqDto? userInfoStateDto,
     NiceUserRespDto? niceUserRespDto,
     Uint8List? imageData,
     String? ocrText,
@@ -48,7 +48,7 @@ class ImageUploadViewModel extends StateNotifier<ImageUploadState> {
           isLoading: false,
         ));
 
-  void updateUserInfo(UserInfoStateDto newUserInfo) {
+  void updateUserInfo(StoreInfoReqDto newUserInfo) {
     state = state.copyWith(userInfoStateDto: newUserInfo);
   }
 

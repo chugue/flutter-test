@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:test/imageupload/dto/nice_user_resp_dto.dart';
+import 'package:test/imageupload/dto/store_info_req_dto.dart';
 import 'package:test/imageupload/image_upload_viewmodel.dart';
 import 'package:image/image.dart' as img;
 
@@ -121,6 +122,8 @@ Future<void> _uploadFileAndOcr(
 
       // 텍스트 추출 결과 처리
       if (ocrText.isNotEmpty) {
+        final ocrJson = extractObjectFromText(ocrText);
+        notifier.updateUserInfo(StoreInfoReqDto.fromJson(ocrJson));
         await notifier.updateOcrText(ocrText);
       } else {
         _showSnackBar(context, '텍스트 추출 실패');
@@ -133,6 +136,12 @@ Future<void> _uploadFileAndOcr(
   } else {
     _showSnackBar(context, '이미지를 선택하세요');
   }
+}
+
+// openai 텍스트 추출 후 json 가공
+String extractObjectFromText(String ocrText) {
+  ocrText = ocrText.replaceFirst('json', '').replaceAll('```', '').trim();
+  return ocrText;
 }
 
 // 파일 로드해서 화면에 표시 상태 변경
