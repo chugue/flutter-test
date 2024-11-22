@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test/imageupload/image_upload_page.dart';
-import 'package:test/nice/nice_web_view.dart';
-import 'package:test/openai/ocr_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

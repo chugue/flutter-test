@@ -1,8 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:state_notifier/state_notifier.dart';
+
 import 'package:test/imageupload/dto/businees_validate_req_dto.dart';
 import 'package:test/imageupload/dto/nice_user_resp_dto.dart';
 import 'package:test/imageupload/dto/store_info_req_dto.dart';
@@ -10,20 +11,17 @@ import 'package:test/imageupload/dto/store_info_req_dto.dart';
 class ImageUploadState {
   final StoreInfoReqDto? storeInfoReqDto;
   final NiceUserRespDto? niceUserRespDto;
-  final BusinessValidateReqDto? businessValidateReqDto;
   final Uint8List? imageData;
   final String? ocrText;
   final bool? isLoading;
   final bool? isBusinessValidate;
-
   ImageUploadState({
-    required this.storeInfoReqDto,
-    required this.niceUserRespDto,
-    required this.businessValidateReqDto,
-    required this.imageData,
-    required this.ocrText,
-    required this.isLoading,
-    required this.isBusinessValidate,
+    this.storeInfoReqDto,
+    this.niceUserRespDto,
+    this.imageData,
+    this.ocrText,
+    this.isLoading,
+    this.isBusinessValidate,
   });
 
   ImageUploadState copyWith({
@@ -38,8 +36,6 @@ class ImageUploadState {
     return ImageUploadState(
       storeInfoReqDto: storeInfoReqDto ?? this.storeInfoReqDto,
       niceUserRespDto: niceUserRespDto ?? this.niceUserRespDto,
-      businessValidateReqDto:
-          businessValidateReqDto ?? this.businessValidateReqDto,
       imageData: imageData ?? this.imageData,
       ocrText: ocrText ?? this.ocrText,
       isLoading: isLoading ?? this.isLoading,
@@ -53,7 +49,6 @@ class ImageUploadViewModel extends StateNotifier<ImageUploadState> {
       : super(ImageUploadState(
           storeInfoReqDto: null,
           niceUserRespDto: null,
-          businessValidateReqDto: null,
           imageData: null,
           ocrText: null,
           isLoading: false,
@@ -88,7 +83,7 @@ class ImageUploadViewModel extends StateNotifier<ImageUploadState> {
     state = state.copyWith(isLoading: isLoading);
   }
 
-  void updateBusinessValidateReqDto(
+  Future<void> updateBusinessValidateReqDto(
       BusinessValidateReqDto newBusinessValidateReqDto) async {
     state = state.copyWith(businessValidateReqDto: newBusinessValidateReqDto);
   }

@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -23,11 +23,13 @@ class ImageUploadPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(imageUploadProvider);
-    final notifier = ref.watch(imageUploadProvider.notifier);
+    final notifier = ref.read(imageUploadProvider.notifier);
 
     // 상태가 변경될 때마다 호출
     ref.listen<ImageUploadState>(imageUploadProvider, (previous, next) {
-      if (next.imageData != null && next.isLoading == true) {
+      if (next.imageData != null &&
+          next.isLoading == true &&
+          previous?.imageData != next.imageData) {
         _uploadFileAndOcr(next, context, notifier);
         notifier.updateLoadingState(false);
       }
@@ -46,24 +48,26 @@ class ImageUploadPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.memory(state.imageData!, fit: BoxFit.cover),
                   ),
-            ElevatedButton(onPressed: () async {
-              // 업로드 링크 받기
-              await _getPresignedUrl(notifier);
-            }, child: const Text('링크 받기'), 4),
+            ElevatedButton(
+              onPressed: () async {
+                // 업로드 링크 받기
+                await _getPresignedUrl(notifier);
+              },
+              child: const Text('링크 받기'),
+            ),
             state.ocrText == null ? Container() : Text(state.ocrText!),
             ElevatedButton(
               onPressed: () async {
                 // 사진 파일 선택, 이미지 데이터 처리
                 await _pickAndProcessFileAndUploadAndOcr(
                     context, notifier, state);
-                // await _businessValidate(notifier, state, context);
               },
               child: const Text('앨범에서 사진 선택하기'),
             ),
             ElevatedButton(
               onPressed: () async {
                 // 가게 등록 완료하기
-                await _registerStore(context, notifier, state);
+                await registerStore(context, notifier, state);
               },
               child: const Text('가게 등록 완료하기 '),
             ),
@@ -74,8 +78,8 @@ class ImageUploadPage extends ConsumerWidget {
   }
 }
 
-///////////////////////////////////////// 내부 기능 메소드 /////////////////////////////////////////
-///////////////////////////////////////// 내부 기능 메소드 /////////////////////////////////////////
+//////////////////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////////////////
+//////////////////////////////////////////////// 내부 기능 메소드 ////////////////////////////////////////////////
 
 // 스낵바 모듈
 void _showSnackBar(BuildContext context, String message) {
@@ -138,11 +142,15 @@ Future<void> _uploadFileAndOcr(
         notifier.updateStoreInfoReqDto(storeInfoReqDto);
         await notifier.updateOcrText(ocrText);
 
+        // 사업자 등록증 검증 요청 객체 생성 - 나중엔 상태에서 로그인 사용자 이름을 가져와야함
         BusinessValidateReqDto businessValidateReqDto = BusinessValidateReqDto(
-            ownerName: "신예진",
+            ownerName: "신예ㅈ",
             businessNumber: storeInfoReqDto.businessNumber,
             startDate: storeInfoReqDto.startDate.toString());
-        notifier.updateBusinessValidateReqDto(businessValidateReqDto);
+
+        // 사업자 등록증 검증 요청
+        await _businessValidate(
+            notifier, context, state, businessValidateReqDto);
       } else {
         _showSnackBar(context, '텍스트 추출 실패');
       }
@@ -158,7 +166,6 @@ Future<void> _uploadFileAndOcr(
 // openai 텍스트 추출 후 json 가공
 String extractObjectFromText(String ocrText) {
   ocrText = ocrText.replaceFirst('json', '').replaceAll('```', '').trim();
-  Logger().d(ocrText);
   return ocrText;
 }
 
@@ -167,6 +174,7 @@ Future<void> _pickAndProcessFileAndUploadAndOcr(BuildContext context,
     ImageUploadViewModel notifier, ImageUploadState state) async {
   try {
     notifier.updateLoadingState(true);
+
     final FilePickerResult? picker = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf'],
@@ -220,7 +228,8 @@ Future<void> _getPresignedUrl(ImageUploadViewModel notifier) async {
 
 // openai 이미지 텍스트 추출
 Future<String> ocrApiRequest(Uint8List imageBytes) async {
-  final image = img.decodeImage(imageBytes);
+  img.Image? image;
+  image = img.decodeImage(imageBytes);
   final resizedImage = img.copyResize(image!, width: 1024); // 너비를 1000으로 조정
   final compressedImageBytes =
       Uint8List.fromList(img.encodeJpg(resizedImage, quality: 100));
@@ -265,28 +274,65 @@ Future<String> ocrApiRequest(Uint8List imageBytes) async {
 }
 
 // 가게 등록 완료하기
-Future<void> _registerStore(BuildContext context, ImageUploadViewModel notifier,
+Future<void> registerStore(BuildContext context, ImageUploadViewModel notifier,
     ImageUploadState state) async {
   Logger().d(state.storeInfoReqDto?.toString());
-  Logger().d(state.businessValidateReqDto?.toString());
 }
 
 // 사업자 등록증 검증
-Future<void> _businessValidate(ImageUploadViewModel notifier,
-    ImageUploadState state, BuildContext context) async {
+Future<void> _businessValidate(
+    ImageUploadViewModel notifier,
+    BuildContext context,
+    ImageUploadState state,
+    BusinessValidateReqDto businessValidateReqDto) async {
   try {
-    if (state.businessValidateReqDto != null) {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/store/verify'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(state.businessValidateReqDto),
+    Logger().d('사업자 등록증 검증 요청 시도');
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/store/verify'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'businessNumber': businessValidateReqDto.businessNumber,
+        'startDate': businessValidateReqDto.startDate,
+        'ownerName': businessValidateReqDto.ownerName,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      notifier.updateIsBusinessValidate(true);
+      _showSnackBar(context, '사업자 등록증 검증 성공');
+    } else if (response.statusCode == 400) {
+      notifier.updateIsBusinessValidate(false);
+      _showSnackBar(context, '사업자 등록증 검증 실패');
+
+      // 사업자 등록증 삭제 요청
+      _deleteBizLisenceRequest(state, context);
+    }
+  } catch (e) {
+    throw Exception('사업자 등록증 검증 중 오류 발생');
+  }
+}
+
+// 사업자 등록증 삭제 요청
+Future<void> _deleteBizLisenceRequest(
+    ImageUploadState state, BuildContext context) async {
+  Logger().d('사업자 등록증 삭제 요청 시도');
+  try {
+    if (state.niceUserRespDto?.bizLicenseUrl != null) {
+      final response = await http.delete(
+        Uri.parse('http://10.0.2.2:3000/file-api/biz-license')
+            .replace(queryParameters: {
+          'url': state.niceUserRespDto?.bizLicenseUrl,
+        }),
       );
 
-      if (response.statusCode == 201) {
-        notifier.updateIsBusinessValidate(true);
-      } else if (response.statusCode == 400) {
-        notifier.updateIsBusinessValidate(false);
-        _showSnackBar(context, '사업자 등록증 검증 실패');
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body)['data']['\$metaData'];
+
+        if (responseData['httpStatusCode'] == 204) {
+          _showSnackBar(context, '사업자 등록증 삭제 성공');
+        }
+      } else {
+        _showSnackBar(context, '사업자 등록증 삭제 실패');
       }
     }
   } catch (e) {
