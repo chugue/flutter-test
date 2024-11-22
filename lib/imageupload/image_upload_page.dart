@@ -1,5 +1,6 @@
-import 'dart:io';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -7,12 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import 'package:logger/logger.dart';
 import 'package:pdfx/pdfx.dart';
+
+import 'package:test/imageupload/dto/businees_validate_req_dto.dart';
 import 'package:test/imageupload/dto/nice_user_resp_dto.dart';
 import 'package:test/imageupload/dto/store_info_req_dto.dart';
 import 'package:test/imageupload/image_upload_viewmodel.dart';
-import 'package:image/image.dart' as img;
 
 class ImageUploadPage extends ConsumerWidget {
   const ImageUploadPage({super.key});
@@ -43,22 +46,26 @@ class ImageUploadPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(15),
                     child: Image.memory(state.imageData!, fit: BoxFit.cover),
                   ),
+            ElevatedButton(onPressed: () async {
+              // 업로드 링크 받기
+              await _getPresignedUrl(notifier);
+            }, child: const Text('링크 받기'), 4),
+            state.ocrText == null ? Container() : Text(state.ocrText!),
             ElevatedButton(
               onPressed: () async {
                 // 사진 파일 선택, 이미지 데이터 처리
                 await _pickAndProcessFileAndUploadAndOcr(
                     context, notifier, state);
+                // await _businessValidate(notifier, state, context);
               },
               child: const Text('앨범에서 사진 선택하기'),
             ),
-            state.ocrText == null ? Container() : Text(state.ocrText!),
-            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                // 업로드 링크 받기
-                await _getPresignedUrl(notifier);
+                // 가게 등록 완료하기
+                await _registerStore(context, notifier, state);
               },
-              child: const Text('링크 받기'),
+              child: const Text('가게 등록 완료하기 '),
             ),
           ],
         ),
@@ -99,6 +106,8 @@ Future<void> _uploadFileAndOcr(
   BuildContext context,
   ImageUploadViewModel notifier,
 ) async {
+  String ocrText = '';
+  notifier.updateOcrText(ocrText);
   if (state.imageData != null && state.niceUserRespDto != null) {
     try {
       final uploadRequest =
@@ -108,7 +117,7 @@ Future<void> _uploadFileAndOcr(
 
       // 업로드와 텍스트 추출을 동시에 실행
       final results = await Future.wait(
-          [uploadRequest.send(), extractTextFromImage(state.imageData!)]);
+          [uploadRequest.send(), ocrApiRequest(state.imageData!)]);
 
       final response = results[0] as http.StreamedResponse;
       final ocrText = results[1] as String;
@@ -121,17 +130,25 @@ Future<void> _uploadFileAndOcr(
       }
 
       // 텍스트 추출 결과 처리
-      if (ocrText.isNotEmpty) {
+      if (ocrText.isNotEmpty && state.storeInfoReqDto != null) {
         final ocrJson = extractObjectFromText(ocrText);
-        notifier.updateUserInfo(StoreInfoReqDto.fromJson(ocrJson));
+
+        StoreInfoReqDto storeInfoReqDto =
+            StoreInfoReqDto.fromJsonOCR(ocrJson, state.storeInfoReqDto!);
+        notifier.updateStoreInfoReqDto(storeInfoReqDto);
         await notifier.updateOcrText(ocrText);
+
+        BusinessValidateReqDto businessValidateReqDto = BusinessValidateReqDto(
+            ownerName: "신예진",
+            businessNumber: storeInfoReqDto.businessNumber,
+            startDate: storeInfoReqDto.startDate.toString());
+        notifier.updateBusinessValidateReqDto(businessValidateReqDto);
       } else {
         _showSnackBar(context, '텍스트 추출 실패');
       }
     } catch (e) {
       _showSnackBar(context, '업로드 중 오류 발생');
     }
-    _showSnackBar(context, '이미지 분석 서비스 성공!');
     return;
   } else {
     _showSnackBar(context, '이미지를 선택하세요');
@@ -141,6 +158,7 @@ Future<void> _uploadFileAndOcr(
 // openai 텍스트 추출 후 json 가공
 String extractObjectFromText(String ocrText) {
   ocrText = ocrText.replaceFirst('json', '').replaceAll('```', '').trim();
+  Logger().d(ocrText);
   return ocrText;
 }
 
@@ -187,6 +205,7 @@ Future<void> _getPresignedUrl(ImageUploadViewModel notifier) async {
         "email": "chugue85@gmail.com"
       }),
     );
+
     if (response.statusCode == 201) {
       final result = jsonDecode(response.body)['data'];
       notifier.updateNiceUserRespDto(NiceUserRespDto.fromJson(result));
@@ -200,7 +219,7 @@ Future<void> _getPresignedUrl(ImageUploadViewModel notifier) async {
 }
 
 // openai 이미지 텍스트 추출
-Future<String> extractTextFromImage(Uint8List imageBytes) async {
+Future<String> ocrApiRequest(Uint8List imageBytes) async {
   final image = img.decodeImage(imageBytes);
   final resizedImage = img.copyResize(image!, width: 1024); // 너비를 1000으로 조정
   final compressedImageBytes =
@@ -222,7 +241,7 @@ Future<String> extractTextFromImage(Uint8List imageBytes) async {
             {
               'type': 'text',
               'text':
-                  '너는 뛰어난 세무사야. 이 이미지는 사업자 등록증이고, 여기서 사업자 등록번호, 개업연월일, 사업장 주소, 상호명(법인명,단체명)을 추출해서 json으로만 반환해야해.\n너가 채워야 할 필드는 businessNumber, startDate, baseAddress, detailAddress, storeName 매칭해서 한글로 반환해야해.\n그리고 보통 주소는 기본주소와 상세주소로 나누어 지는데, 주소가 --서울특별시 종로구 종로 6, 5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 되어있으면 \n기본주소는 --서울특별시 종로구 종로 6--이고 상세주소는 --5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 나누어져야해 \n그리고 모든 주소는 한국에서 실존하는 지역명이어야 해'
+                  '너는 뛰어난 세무사야. 이 이미지는 사업자 등록증이고, 여기서 사업자 등록번호, 개업연월일, 사업장 주소, 상호명(법인명,단체명)을 추출해서 json으로만 반환해야해.\n너가 채워야 할 필드는 businessNumber, startDate, baseAddress, detailAddress, storeName 매칭해서 한글로 반환해야해.\n그리고 보통 주소는 기본주소와 상세주소로 나누어 지는데, 주소가 --서울특별시 종로구 종로 6, 5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 되어있으면 \n기본주소는 --서울특별시 종로구 종로 6--이고 상세주소는 --5층 스타필드 빌리지(서린동, 광화문우체국)-- 이런식으로 나누어져야해 \n그리고 모든 주소는 한국에서 실존하는 지역명이어야 해. 그리고 개업연월을은 yyyy/mm/dd 형식이어야 해 '
             },
             {
               'type': 'image_url',
@@ -242,5 +261,35 @@ Future<String> extractTextFromImage(Uint8List imageBytes) async {
     return data['choices'][0]['message']['content'];
   } else {
     throw Exception('Failed to extract text: ${response.body}');
+  }
+}
+
+// 가게 등록 완료하기
+Future<void> _registerStore(BuildContext context, ImageUploadViewModel notifier,
+    ImageUploadState state) async {
+  Logger().d(state.storeInfoReqDto?.toString());
+  Logger().d(state.businessValidateReqDto?.toString());
+}
+
+// 사업자 등록증 검증
+Future<void> _businessValidate(ImageUploadViewModel notifier,
+    ImageUploadState state, BuildContext context) async {
+  try {
+    if (state.businessValidateReqDto != null) {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/store/verify'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(state.businessValidateReqDto),
+      );
+
+      if (response.statusCode == 201) {
+        notifier.updateIsBusinessValidate(true);
+      } else if (response.statusCode == 400) {
+        notifier.updateIsBusinessValidate(false);
+        _showSnackBar(context, '사업자 등록증 검증 실패');
+      }
+    }
+  } catch (e) {
+    throw Exception('사업자 등록증 검증 중 오류 발생');
   }
 }
