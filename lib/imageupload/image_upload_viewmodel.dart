@@ -15,6 +15,7 @@ class ImageUploadState {
   final String? ocrText;
   final bool? isLoading;
   final bool? isBusinessValidate;
+  
   ImageUploadState({
     this.storeInfoReqDto,
     this.niceUserRespDto,

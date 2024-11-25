@@ -144,7 +144,7 @@ Future<void> _uploadFileAndOcr(
 
         // 사업자 등록증 검증 요청 객체 생성 - 나중엔 상태에서 로그인 사용자 이름을 가져와야함
         BusinessValidateReqDto businessValidateReqDto = BusinessValidateReqDto(
-            ownerName: "신예ㅈ",
+            ownerName: "신예진",
             businessNumber: storeInfoReqDto.businessNumber,
             startDate: storeInfoReqDto.startDate.toString());
 
@@ -276,7 +276,26 @@ Future<String> ocrApiRequest(Uint8List imageBytes) async {
 // 가게 등록 완료하기
 Future<void> registerStore(BuildContext context, ImageUploadViewModel notifier,
     ImageUploadState state) async {
-  Logger().d(state.storeInfoReqDto?.toString());
+  try {
+    Logger().d('가게 등록 요청 시도');
+    if (state.storeInfoReqDto != null) {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/store'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(state.storeInfoReqDto?.toMap()),
+      );
+
+      if (response.statusCode == 201) {
+        _showSnackBar(context, '가게 등록 성공');
+      } else {
+        _showSnackBar(context, '가게 등록 실패');
+      }
+    } else {
+      _showSnackBar(context, '가게 등록 정보를 입력하세요');
+    }
+  } catch (e) {
+    throw Exception('가게 등록 중 오류 발생');
+  }
 }
 
 // 사업자 등록증 검증
@@ -297,10 +316,11 @@ Future<void> _businessValidate(
       }),
     );
 
+    Logger().d(response.body);
     if (response.statusCode == 201) {
       notifier.updateIsBusinessValidate(true);
       _showSnackBar(context, '사업자 등록증 검증 성공');
-    } else if (response.statusCode == 400) {
+    } else {
       notifier.updateIsBusinessValidate(false);
       _showSnackBar(context, '사업자 등록증 검증 실패');
 
@@ -326,11 +346,7 @@ Future<void> _deleteBizLisenceRequest(
       );
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body)['data']['\$metaData'];
-
-        if (responseData['httpStatusCode'] == 204) {
-          _showSnackBar(context, '사업자 등록증 삭제 성공');
-        }
+        _showSnackBar(context, '사업자 등록증 삭제 성공');
       } else {
         _showSnackBar(context, '사업자 등록증 삭제 실패');
       }

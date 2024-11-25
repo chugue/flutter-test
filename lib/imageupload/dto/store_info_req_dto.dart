@@ -14,9 +14,11 @@ class StoreInfoReqDto {
   final String? storeCategory;
   final String? storePhone;
   final DateTime? startDate;
-  final String? openningHour;
+  final String? openingHour;
   final bool? isMainBranch;
-  final bool? is24hOpen;
+  final bool? is24Open;
+  final bool? isLegalAgreed;
+
   StoreInfoReqDto({
     this.userInfoId,
     this.businessNumber,
@@ -28,9 +30,10 @@ class StoreInfoReqDto {
     this.storeCategory,
     this.storePhone,
     this.startDate,
-    this.openningHour,
+    this.openingHour,
     this.isMainBranch,
-    this.is24hOpen,
+    this.is24Open,
+    this.isLegalAgreed,
   });
 
   StoreInfoReqDto copyWith({
@@ -44,9 +47,10 @@ class StoreInfoReqDto {
     String? storeCategory,
     String? storePhone,
     DateTime? startDate,
-    String? openningHour,
+    String? openingHour,
     bool? isMainBranch,
-    bool? is24hOpen,
+    bool? is24Open,
+    bool? isLegalAgreed,
   }) {
     return StoreInfoReqDto(
       userInfoId: userInfoId ?? this.userInfoId,
@@ -59,9 +63,10 @@ class StoreInfoReqDto {
       storeCategory: storeCategory ?? this.storeCategory,
       storePhone: storePhone ?? this.storePhone,
       startDate: startDate ?? this.startDate,
-      openningHour: openningHour ?? this.openningHour,
+      openingHour: openingHour ?? openingHour,
       isMainBranch: isMainBranch ?? this.isMainBranch,
-      is24hOpen: is24hOpen ?? this.is24hOpen,
+      is24Open: is24Open ?? is24Open,
+      isLegalAgreed: isLegalAgreed ?? this.isLegalAgreed,
     );
   }
 
@@ -77,9 +82,10 @@ class StoreInfoReqDto {
       'storeCategory': storeCategory,
       'storePhone': storePhone,
       'startDate': startDate?.millisecondsSinceEpoch,
-      'openningHour': openningHour,
+      'openingHour': openingHour,
       'isMainBranch': isMainBranch,
-      'is24hOpen': is24hOpen,
+      'is24Open': is24Open,
+      'isLegalAgreed': isLegalAgreed,
     };
   }
 
@@ -101,18 +107,20 @@ class StoreInfoReqDto {
       branchName:
           map['branchName'] != null ? map['branchName'] as String : null,
       storeCategory:
-          map['storeCategory'] != null ? map['storeCategory'] as String : null,
+          map['storeCategory'] != null ? map['storeCategory'] as String : '카페',
       storePhone: map['storePhone'] != null
           ? map['storePhone'] as String
           : '0507-1234-5678',
       startDate: map['startDate'] != null
           ? dateFormat.parse(map['startDate'] as String)
           : null,
-      openningHour:
-          map['openningHour'] != null ? map['openningHour'] as String : '09:00',
+      openingHour:
+          map['openingHour'] != null ? map['openingHour'] as String : '09:00',
       isMainBranch:
           map['isMainBranch'] != null ? map['isMainBranch'] as bool : true,
-      is24hOpen: map['is24hOpen'] != null ? map['is24hOpen'] as bool : false,
+      is24Open: map['is24Open'] != null ? map['is24Open'] as bool : false,
+      isLegalAgreed:
+          map['isLegalAgreed'] != null ? map['isLegalAgreed'] as bool : false,
     );
   }
 
@@ -131,18 +139,20 @@ class StoreInfoReqDto {
       branchName:
           map['branchName'] != null ? map['branchName'] as String : null,
       storeCategory:
-          map['storeCategory'] != null ? map['storeCategory'] as String : null,
+          map['storeCategory'] != null ? map['storeCategory'] as String : '카페',
       storePhone: map['storePhone'] != null
           ? map['storePhone'] as String
           : '0507-1234-5678',
       startDate: map['startDate'] != null
           ? dateFormat.parse(map['startDate'] as String)
           : null,
-      openningHour:
-          map['openningHour'] != null ? map['openningHour'] as String : '09:00',
+      openingHour:
+          map['openingHour'] != null ? map['openingHour'] as String : '09:00',
       isMainBranch:
           map['isMainBranch'] != null ? map['isMainBranch'] as bool : true,
-      is24hOpen: map['is24hOpen'] != null ? map['is24hOpen'] as bool : false,
+      is24Open: map['is24Open'] != null ? map['is24Open'] as bool : false,
+      isLegalAgreed:
+          map['isLegalAgreed'] != null ? map['isLegalAgreed'] as bool : false,
     );
   }
 
@@ -158,7 +168,7 @@ class StoreInfoReqDto {
 
   @override
   String toString() {
-    return 'StoreInfoReqDto(userInfoId: $userInfoId, businessNumber: $businessNumber, bizLicenseUrl: $bizLicenseUrl, baseAddress: $baseAddress, detailAddress: $detailAddress, storeName: $storeName, branchName: $branchName, storeCategory: $storeCategory, storePhone: $storePhone, startDate: $startDate, openningHour: $openningHour, isMainBranch: $isMainBranch, is24hOpen: $is24hOpen)';
+    return 'StoreInfoReqDto(userInfoId: $userInfoId, businessNumber: $businessNumber, bizLicenseUrl: $bizLicenseUrl, baseAddress: $baseAddress, detailAddress: $detailAddress, storeName: $storeName, branchName: $branchName, storeCategory: $storeCategory, storePhone: $storePhone, startDate: $startDate, openningHour: $openingHour, isMainBranch: $isMainBranch, is24hOpen: $is24Open)';
   }
 
   @override
@@ -175,9 +185,10 @@ class StoreInfoReqDto {
         other.storeCategory == storeCategory &&
         other.storePhone == storePhone &&
         other.startDate == startDate &&
-        other.openningHour == openningHour &&
+        other.openingHour == openingHour &&
         other.isMainBranch == isMainBranch &&
-        other.is24hOpen == is24hOpen;
+        other.is24Open == is24Open &&
+        other.isLegalAgreed == isLegalAgreed;
   }
 
   @override
@@ -192,8 +203,9 @@ class StoreInfoReqDto {
         storeCategory.hashCode ^
         storePhone.hashCode ^
         startDate.hashCode ^
-        openningHour.hashCode ^
+        openingHour.hashCode ^
         isMainBranch.hashCode ^
-        is24hOpen.hashCode;
+        is24Open.hashCode ^
+        isLegalAgreed.hashCode;
   }
 }
